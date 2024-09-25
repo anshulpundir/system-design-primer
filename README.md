@@ -493,36 +493,34 @@ This approach is seen in file systems and RDBMSes.  Strong consistency works wel
 
 ## Availability patterns
 
-There are two main patterns to support high availability: **fail-over** and **replication**.
+### Replication
+High availability (HA) is achieved through **replication**, which is basically maintaining multiple copies of the data in a fault-tolerant fashion.
+A primary/active replica is selected using leader-election *[https://en.wikipedia.org/wiki/Leader_election]
 
-### Fail-over
+### Replication
+The act of moving traffic over from one copy of data, or replica, to another is called a **fail-over**. The replica is said to have failed-over.
+
 
 #### Active-passive
 
-With active-passive fail-over, heartbeats are sent between the active and the passive server on standby.  If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service.
+With active-passive replication, requests are only sent to the active/primary replica.
 
-The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby.  Only the active server handles traffic.
+heartbeats are sent between the active and the passive server on standby.  In case the active fails, heartbeats are interrupted, and the passive server takes over as active and and resumes service.
 
-Active-passive failover can also be referred to as master-slave failover.
+The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby.  
 
 #### Active-active
 
 In active-active, both servers are managing traffic, spreading the load between them.
 
-If the servers are public-facing, the DNS would need to know about the public IPs of both servers.  If the servers are internal-facing, application logic would need to know about both servers.
+If the servers are public-facing, the DNS would need to know about the public IPs of both servers.  If the servers are internal-facing, load-balancing or application logic would need to know about both servers.
 
 Active-active failover can also be referred to as master-master failover.
 
-### Disadvantage(s): failover
 
-* Fail-over adds more hardware and additional complexity.
-* There is a potential for loss of data if the active system fails before any newly written data can be replicated to the passive.
+### Trade-offs
 
-### Replication
-
-#### Master-slave and master-master
-
-This topic is further discussed in the [Database](#database) section:
+* Replication adds both software and hardwware (and therefore cost) complexity.
 
 * [Master-slave replication](#master-slave-replication)
 * [Master-master replication](#master-master-replication)
